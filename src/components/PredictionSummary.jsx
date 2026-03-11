@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { FileChartColumn, AlertTriangle, FileText } from 'lucide-react';
 import ReportPreviewModal from './ReportPreviewModal';
 
-export default function PredictionSummary({ isAnalyzed, file }) {
+export default function PredictionSummary({ isAnalyzed, file, predictionResult, error }) {
     const [showReport, setShowReport] = useState(false);
 
     if (!isAnalyzed) {
@@ -15,9 +15,20 @@ export default function PredictionSummary({ isAnalyzed, file }) {
         )
     }
 
-    // Dummy Results
-    const malignProb = 91;
-    const benignProb = 9;
+    if (error) {
+        return (
+            <div className="h-full bg-red-50 rounded border border-red-200 flex flex-col items-center justify-center p-6 text-center text-red-700">
+                <AlertTriangle className="text-red-400 mb-3" size={32} />
+                <p className="text-sm font-bold mb-1">Analysis Failed</p>
+                <p className="text-xs max-w-[200px] leading-relaxed opacity-90">{error}</p>
+            </div>
+        )
+    }
+
+    // Real Results
+    const malignProb = predictionResult ? Math.round((predictionResult.prediction === "Malignant" ? predictionResult.confidence : 1 - predictionResult.confidence) * 100) : 0;
+    const benignProb = predictionResult ? Math.round((predictionResult.prediction === "Benign" ? predictionResult.confidence : 1 - predictionResult.confidence) * 100) : 0;
+    const isMalignant = predictionResult ? predictionResult.prediction === "Malignant" : false;
 
     return (
         <>
@@ -25,16 +36,18 @@ export default function PredictionSummary({ isAnalyzed, file }) {
                 {/* Header */}
                 <div className="flex items-center justify-between mb-4">
                     <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wide">Prediction Summary</h3>
-                    <span className="px-2 py-0.5 bg-red-50 text-red-700 text-xs font-bold rounded-full border border-red-100 shadow-sm">
-                        MALIGNANT DETECTED
-                    </span>
+                    {predictionResult && (
+                        <span className={`px-2 py-0.5 text-xs font-bold rounded-full border shadow-sm ${isMalignant ? 'bg-red-50 text-red-700 border-red-100' : 'bg-emerald-50 text-emerald-700 border-emerald-100'}`}>
+                            {isMalignant ? 'MALIGNANT DETECTED' : 'BENIGN DETECTED'}
+                        </span>
+                    )}
                 </div>
 
                 {/* Content */}
                 <div className="space-y-4 flex-1">
                     {/* Score Large */}
                     <div className="text-center py-2">
-                        <div className="text-5xl font-light text-slate-900">{malignProb}<span className="text-2xl text-slate-400">%</span></div>
+                        <div className="text-5xl font-light text-slate-900">{predictionResult ? Math.round(predictionResult.confidence * 100) : '--'}<span className="text-2xl text-slate-400">%</span></div>
                         <div className="text-xs font-bold text-slate-500 uppercase tracking-wider mt-1">Confidence Score</div>
                     </div>
 

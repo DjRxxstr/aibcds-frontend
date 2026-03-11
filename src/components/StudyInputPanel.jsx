@@ -18,6 +18,7 @@ export default function StudyInputPanel({ onRunAnalysis, isAnalyzing }) {
             // Create a fake preview for the file
             const previewUrl = URL.createObjectURL(file);
             setSelectedFile({
+                originalFile: file,
                 name: file.name,
                 size: (file.size / 1024 / 1024).toFixed(2) + ' MB',
                 preview: previewUrl,
