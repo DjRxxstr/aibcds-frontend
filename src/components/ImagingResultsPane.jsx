@@ -4,7 +4,7 @@ import SegmentationPanel from './SegmentationPanel';
 import GradCAMPanel from './GradCAMPanel';
 import PredictionSummary from './PredictionSummary';
 
-export default function ImagingResultsPane({ file, isAnalyzed, predictionResult, error }) {
+export default function ImagingResultsPane({ file, isAnalyzed, predictionResult, error, studyMetadata }) {
     return (
         <main className="flex-1 bg-slate-50 p-2 overflow-hidden flex flex-col">
             {/* Top Toolbar Placeholder */}
@@ -31,7 +31,7 @@ export default function ImagingResultsPane({ file, isAnalyzed, predictionResult,
 
                 {/* 4. Predictions */}
                 <div className="min-h-0 relative text-slate-900">
-                    <PredictionSummary isAnalyzed={isAnalyzed} file={file} predictionResult={predictionResult} error={error} />
+                    <PredictionSummary isAnalyzed={isAnalyzed} file={file} predictionResult={predictionResult} error={error} studyMetadata={studyMetadata} />
                 </div>
             </div>
         </main>

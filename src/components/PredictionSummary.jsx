@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { FileChartColumn, AlertTriangle, FileText } from 'lucide-react';
 import ReportPreviewModal from './ReportPreviewModal';
 
-export default function PredictionSummary({ isAnalyzed, file, predictionResult, error }) {
+export default function PredictionSummary({ isAnalyzed, file, predictionResult, error, studyMetadata }) {
     const [showReport, setShowReport] = useState(false);
 
     if (!isAnalyzed) {
@@ -97,6 +97,8 @@ export default function PredictionSummary({ isAnalyzed, file, predictionResult, 
                 isOpen={showReport}
                 onClose={() => setShowReport(false)}
                 file={file}
+                studyMetadata={studyMetadata}
+                predictionResult={predictionResult}
             />
         </>
     );

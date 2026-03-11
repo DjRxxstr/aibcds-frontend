@@ -86,7 +86,7 @@ export default function StudyInputPanel({ onRunAnalysis, isAnalyzing }) {
 
                 {/* 2. Patient Data */}
                 <section>
-                    <label className="block text-sm font-medium text-slate-700 mb-2">Metadata <span className="text-slate-400 font-normal">(Optional)</span></label>
+                    <label className="block text-sm font-medium text-slate-700 mb-2">Metadata <span className="text-red-500 font-bold">*</span></label>
                     <div className="space-y-3">
                         <input
                             type="text"
@@ -161,12 +161,17 @@ export default function StudyInputPanel({ onRunAnalysis, isAnalyzing }) {
 
             {/* Footer / Action */}
             <div className="p-4 bg-white border-t border-slate-200">
+                {(!selectedFile || !patientId || !age) && !isAnalyzing && (
+                    <p className="text-[10px] text-red-500 font-medium mb-2 text-center">
+                        * Please acquire an image and fill out Patient ID and Age.
+                    </p>
+                )}
                 <button
                     onClick={handleRunClick}
-                    disabled={!selectedFile || isAnalyzing}
+                    disabled={!selectedFile || !patientId || !age || isAnalyzing}
                     className={`
              w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-md text-sm font-medium transition-all
-             ${!selectedFile
+             ${(!selectedFile || !patientId || !age)
                             ? 'bg-slate-100 text-slate-400 cursor-not-allowed'
                             : isAnalyzing
                                 ? 'bg-blue-50 text-blue-600 cursor-wait'

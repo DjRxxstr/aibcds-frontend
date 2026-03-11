@@ -1,12 +1,22 @@
 import React from 'react';
 import { X, FileText, Download, Printer, Copy } from 'lucide-react';
 
-export default function ReportPreviewModal({ isOpen, onClose, file, data }) {
+export default function ReportPreviewModal({ isOpen, onClose, file, studyMetadata, predictionResult }) {
     if (!isOpen) return null;
 
     // Placeholder Data
+    // Data processing
     const reportDate = new Date().toLocaleString();
     const reportId = "RPT-" + Math.floor(Math.random() * 100000);
+    
+    // Fallback values
+    const safePatientId = studyMetadata?.patientId || "PID-XXXX (Anonymized)";
+    const safeAge = studyMetadata?.age || "--";
+    const safeAnatomy = studyMetadata?.anatomy || "Femur (Auto-detected)";
+    
+    const isMalignant = predictionResult?.prediction === "Malignant";
+    const predClass = predictionResult?.prediction ? predictionResult.prediction.toUpperCase() : "UNKNOWN";
+    const predConf = predictionResult?.confidence ? (predictionResult.confidence * 100).toFixed(1) + "%" : "--%";
 
     return (
         <div className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-200">
@@ -52,7 +62,7 @@ export default function ReportPreviewModal({ isOpen, onClose, file, data }) {
                                     <tbody>
                                         <tr className="border-b border-slate-100"><th className="py-1 font-medium text-slate-600 w-24">File Name:</th><td>{file?.name || "Unknown"}</td></tr>
                                         <tr className="border-b border-slate-100"><th className="py-1 font-medium text-slate-600">Scan ID:</th><td>{Math.random().toString(36).substr(2, 9).toUpperCase()}</td></tr>
-                                        <tr className="border-b border-slate-100"><th className="py-1 font-medium text-slate-600">Region:</th><td>Femur (Auto-detected)</td></tr>
+                                        <tr className="border-b border-slate-100"><th className="py-1 font-medium text-slate-600">Region:</th><td>{safeAnatomy}</td></tr>
                                     </tbody>
                                 </table>
                             </div>
@@ -60,8 +70,8 @@ export default function ReportPreviewModal({ isOpen, onClose, file, data }) {
                                 <h4 className="text-xs font-bold text-slate-400 uppercase mb-1">Subject Metadata</h4>
                                 <table className="w-full text-left">
                                     <tbody>
-                                        <tr className="border-b border-slate-100"><th className="py-1 font-medium text-slate-600 w-24">Patient ID:</th><td>PID-XXXX (Anonymized)</td></tr>
-                                        <tr className="border-b border-slate-100"><th className="py-1 font-medium text-slate-600">Age/Sex:</th><td>-- / --</td></tr>
+                                        <tr className="border-b border-slate-100"><th className="py-1 font-medium text-slate-600 w-24">Patient ID:</th><td className="font-mono">{safePatientId}</td></tr>
+                                        <tr className="border-b border-slate-100"><th className="py-1 font-medium text-slate-600">Age:</th><td>{safeAge}</td></tr>
                                         <tr className="border-b border-slate-100"><th className="py-1 font-medium text-slate-600">Date:</th><td>{new Date().toLocaleDateString()}</td></tr>
                                     </tbody>
                                 </table>
@@ -73,13 +83,13 @@ export default function ReportPreviewModal({ isOpen, onClose, file, data }) {
                             <h2 className="text-lg font-bold text-slate-900 border-b border-slate-200 pb-2 mb-4">AI Analysis Summary</h2>
 
                             <div className="grid grid-cols-2 gap-4 mb-4">
-                                <div className="p-3 bg-red-50 border border-red-100 rounded">
-                                    <span className="block text-xs font-bold text-red-400 uppercase">Primary Classification</span>
-                                    <span className="block text-xl font-bold text-red-700 mt-1">MALIGNANT</span>
+                                <div className={`p-3 border rounded ${isMalignant ? 'bg-red-50 border-red-100' : 'bg-emerald-50 border-emerald-100'}`}>
+                                    <span className={`block text-xs font-bold uppercase ${isMalignant ? 'text-red-400' : 'text-emerald-400'}`}>Primary Classification</span>
+                                    <span className={`block text-xl font-bold mt-1 ${isMalignant ? 'text-red-700' : 'text-emerald-700'}`}>{predClass}</span>
                                 </div>
                                 <div className="p-3 bg-white border border-slate-200 rounded">
                                     <span className="block text-xs font-bold text-slate-400 uppercase">Confidence Score</span>
-                                    <span className="block text-xl font-bold text-slate-800 mt-1">91.0%</span>
+                                    <span className="block text-xl font-bold text-slate-800 mt-1">{predConf}</span>
                                 </div>
                             </div>
 

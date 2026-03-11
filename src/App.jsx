@@ -9,9 +9,11 @@ function App() {
   const [currentFile, setCurrentFile] = useState(null);
   const [predictionResult, setPredictionResult] = useState(null);
   const [error, setError] = useState(null);
+  const [studyMetadata, setStudyMetadata] = useState(null);
 
   const handleRunAnalysis = async (data) => {
     setCurrentFile(data.file);
+    setStudyMetadata(data.metadata);
     setIsAnalyzing(true);
     setAnalysisComplete(false);
     setPredictionResult(null);
@@ -66,6 +68,7 @@ function App() {
           isAnalyzed={analysisComplete}
           predictionResult={predictionResult}
           error={error}
+          studyMetadata={studyMetadata}
         />
       </div>
     </div>
